@@ -5,10 +5,27 @@ export const submitData = async (req, res) => {
   try {
     const { name, address } = req.body;
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "video",
-      folder: "audios",
-    });
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, error: "No file uploaded" });
+    }
+
+    // Upload langsung dari buffer memory
+    const streamUpload = (buffer) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: "video", folder: "audios" },
+          (error, result) => {
+            if (result) resolve(result);
+            else reject(error);
+          }
+        );
+        stream.end(buffer);
+      });
+    };
+
+    const result = await streamUpload(req.file.buffer);
 
     const newData = new Data({
       name,
