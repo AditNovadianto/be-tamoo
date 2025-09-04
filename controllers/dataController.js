@@ -1,6 +1,5 @@
 import Data from "../models/Data.js";
 import cloudinary from "../config/cloudinary.js";
-import fs from "fs";
 
 export const submitData = async (req, res) => {
   try {
@@ -18,8 +17,6 @@ export const submitData = async (req, res) => {
     });
 
     await newData.save();
-
-    fs.unlinkSync(req.file.path);
 
     res.json({ success: true, data: newData });
   } catch (err) {
