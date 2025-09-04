@@ -5,10 +5,8 @@ import { getAllData, submitData } from "../controllers/dataController.js";
 const router = express.Router();
 
 // Setup multer (lokal)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
-});
+const storage = multer.memoryStorage(); // file disimpan di memory, bukan disk
+
 const upload = multer({ storage });
 
 // Routes
